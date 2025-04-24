@@ -1,0 +1,202 @@
+<!-- Minimal JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize mobile menu
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (mobileMenuBtn && navLinks) {
+            mobileMenuBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                this.setAttribute(
+                    'aria-expanded', 
+                    this.getAttribute('aria-expanded') === 'false' ? 'true' : 'false'
+                );
+            });
+        }
+        
+        // Scroll to top button
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        
+        if (scrollTopBtn) {
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.add('visible');
+                } else {
+                    scrollTopBtn.classList.remove('visible');
+                }
+            });
+            
+            scrollTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+        
+        // Project tabs
+        const tabLinks = document.querySelectorAll('.tab-link');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        
+        if (tabLinks.length > 0 && tabPanels.length > 0) {
+            tabLinks.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabLinks.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    this.classList.add('active');
+                    this.setAttribute('aria-selected', 'true');
+                    
+                    const panelId = this.getAttribute('aria-controls');
+                    tabPanels.forEach(panel => {
+                        panel.classList.remove('active');
+                    });
+                    document.getElementById(panelId).classList.add('active');
+                });
+            });
+        }
+        
+        // Cookie consent
+        const cookieConsent = document.getElementById('cookieConsent');
+        const acceptCookies = document.getElementById('acceptCookies');
+        const cookieSettings = document.getElementById('cookieSettings');
+        
+        if (cookieConsent && acceptCookies) {
+            if (!localStorage.getItem('cookiesAccepted')) {
+                setTimeout(function() {
+                    cookieConsent.classList.add('active');
+                }, 2000);
+                
+                acceptCookies.addEventListener('click', function() {
+                    localStorage.setItem('cookiesAccepted', 'true');
+                    cookieConsent.classList.remove('active');
+                });
+                
+                if (cookieSettings) {
+                    cookieSettings.addEventListener('click', function() {
+                        alert('Cookie settings would open here. For this demo, all cookies are accepted.');
+                        localStorage.setItem('cookiesAccepted', 'true');
+                        cookieConsent.classList.remove('active');
+                    });
+                }
+            }
+        }
+        
+        // Contact form validation
+        const contactForm = document.getElementById('contactForm');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                
+                const formFields = {
+                    name: { element: document.getElementById('name'), errorElement: document.getElementById('name-error') },
+                    email: { element: document.getElementById('email'), errorElement: document.getElementById('email-error') },
+                    subject: { element: document.getElementById('subject'), errorElement: document.getElementById('subject-error') },
+                    message: { element: document.getElementById('message'), errorElement: document.getElementById('message-error') }
+                };
+                
+                function isValidEmail(email) {
+                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return regex.test(email);
+                }
+                
+                for (const field in formFields) {
+                    const { element, errorElement } = formFields[field];
+                    
+                    if (!element.value.trim()) {
+                        isValid = false;
+                        errorElement.textContent = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+                        element.classList.add('error');
+                    } else if (field === 'email' && !isValidEmail(element.value)) {
+                        isValid = false;
+                        errorElement.textContent = 'Please enter a valid email address';
+                        element.classList.add('error');
+                    } else {
+                        errorElement.textContent = '';
+                        element.classList.remove('error');
+                    }
+                }
+                
+                if (isValid) {
+                    // Here you would typically send the form data to a server
+                    // For now, just show a success message
+                    const formContainer = contactForm.parentElement;
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'success-message';
+                    successMessage.innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Message Sent!</h3>
+                        <p>Thanks for reaching out. We'll get back to you shortly.</p>
+                    `;
+                    
+                    contactForm.style.display = 'none';
+                    formContainer.appendChild(successMessage);
+                    
+                    contactForm.reset();
+                }
+            });
+            
+            // Clear errors on input
+            for (const field of ['name', 'email', 'subject', 'message']) {
+                const element = document.getElementById(field);
+                const errorElement = document.getElementById(`${field}-error`);
+                
+                if (element && errorElement) {
+                    element.addEventListener('input', function() {
+                        errorElement.textContent = '';
+                        element.classList.remove('error');
+                    });
+                }
+            }
+        }
+        
+        // Update copyright year
+        const currentYearElement = document.getElementById('currentYear');
+        if (currentYearElement) {
+            currentYearElement.textContent = new Date().getFullYear();
+        }
+        
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    e.preventDefault();
+                    
+                    // Close mobile menu if open
+                    if (navLinks && navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                        if (mobileMenuBtn) {
+                            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80, // Offset for fixed header
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update URL without jumping
+                    history.pushState(null, null, targetId);
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Google Analytics (replace with your GA code) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+</script>

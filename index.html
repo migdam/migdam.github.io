@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M-Infinity | Intelligent Flow. Limitless Impact.</title>
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="css/main.css" as="style">
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Overlay Logo Styles */
+        .overlay-logo {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+            pointer-events: none; /* Allows clicking through the logo */
+            width: 120px;
+            height: auto;
+            filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.2));
+        }
+        
+        .overlay-logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .overlay-logo {
+                width: 80px;
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+    
+    <script>
+        // Function to include HTML content
+        function includeHTML(containerId, filePath) {
+            return fetch(filePath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error loading ${filePath}: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById(containerId).innerHTML = html;
+                    return containerId; // Return the containerId for chaining
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById(containerId).innerHTML = `<p>Error loading content: ${error.message}</p>`;
+                    return containerId; // Return even in case of error
+                });
+        }
+        
+        // Initialize tab functionality
+        function initializeTabs() {
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+            
+            if (tabLinks.length > 0 && tabPanels.length > 0) {
+                tabLinks.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        // Update active tab
+                        tabLinks.forEach(t => {
+                            t.classList.remove('active');
+                            t.setAttribute('aria-selected', 'false');
+                        });
+                        this.classList.add('active');
+                        this.setAttribute('aria-selected', 'true');
+                        
+                        // Show corresponding panel
+                        const panelId = this.getAttribute('aria-controls');
+                        tabPanels.forEach(panel => {
+                            panel.classList.remove('active');
+                        });
+                        document.getElementById(panelId).classList.add('active');
+                    });
+                });
+                console.log('Tab functionality initialized successfully');
+            } else {
+                console.warn('Tab elements not found');
+            }
+        }
+        
+        // Initialize all functionality
+        function initializeAll() {
+            // Mobile menu
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileMenuBtn && navLinks) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    this.setAttribute(
+                        'aria-expanded', 
+                        this.getAttribute('aria-expanded') === 'false' ? 'true' : 'false'
+                    );
+                });
+            }
+            
+            // Scroll to top button
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            
+            if (scrollTopBtn) {
+                window.addEventListener('scroll', function() {
+                    if (window.scrollY > 300) {
+                        scrollTopBtn.classList.add('visible');
+                    } else {
+                        scrollTopBtn.classList.remove('visible');
+                    }
+                });
+                
+                scrollTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            // Initialize tabs
+            initializeTabs();
+            
+            // Cookie consent
+            const cookieConsent = document.getElementById('cookieConsent');
+            const acceptCookies = document.getElementById('acceptCookies');
+            const cookieSettings = document.getElementById('cookieSettings');
+            
+            if (cookieConsent && acceptCookies) {
+                if (!localStorage.getItem('cookiesAccepted')) {
+                    setTimeout(function() {
+                        cookieConsent.classList.add('active');
+                    }, 2000);
+                    
+                    acceptCookies.addEventListener('click', function() {
+                        localStorage.setItem('cookiesAccepted', 'true');
+                        cookieConsent.classList.remove('active');
+                    });
+                    
+                    if (cookieSettings) {
+                        cookieSettings.addEventListener('click', function() {
+                            alert('Cookie settings would open here. For this demo, all cookies are accepted.');
+                            localStorage.setItem('cookiesAccepted', 'true');
+                            cookieConsent.classList.remove('active');
+                        });
+                    }
+                }
+            }
+            
+            // Contact form validation
+            const contactForm = document.getElementById('contactForm');
+            
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    let isValid = true;
+                    
+                    const formFields = {
+                        name: { element: document.getElementById('name'), errorElement: document.getElementById('name-error') },
+                        email: { element: document.getElementById('email'), errorElement: document.getElementById('email-error') },
+                        subject: { element: document.getElementById('subject'), errorElement: document.getElementById('subject-error') },
+                        message: { element: document.getElementById('message'), errorElement: document.getElementById('message-error') }
+                    };
+                    
+                    function isValidEmail(email) {
+                        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        return regex.test(email);
+                    }
+                    
+                    for (const field in formFields) {
+                        const { element, errorElement } = formFields[field];
+                        
+                        if (!element || !errorElement) continue;
+                        
+                        if (!element.value.trim()) {
+                            isValid = false;
+                            errorElement.textContent = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+                            element.classList.add('error');
+                        } else if (field === 'email' && !isValidEmail(element.value)) {
+                            isValid = false;
+                            errorElement.textContent = 'Please enter a valid email address';
+                            element.classList.add('error');
+                        } else {
+                            errorElement.textContent = '';
+                            element.classList.remove('error');
+                        }
+                    }
+                    
+                    if (isValid) {
+                        // Here you would typically send the form data to a server
+                        // For now, just show a success message
+                        const formContainer = contactForm.parentElement;
+                        const successMessage = document.createElement('div');
+                        successMessage.className = 'success-message';
+                        successMessage.innerHTML = `
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Message Sent!</h3>
+                            <p>Thanks for reaching out. We'll get back to you shortly.</p>
+                        `;
+                        
+                        contactForm.style.display = 'none';
+                        formContainer.appendChild(successMessage);
+                        
+                        contactForm.reset();
+                    }
+                });
+                
+                // Clear errors on input
+                for (const field of ['name', 'email', 'subject', 'message']) {
+                    const element = document.getElementById(field);
+                    const errorElement = document.getElementById(`${field}-error`);
+                    
+                    if (element && errorElement) {
+                        element.addEventListener('input', function() {
+                            errorElement.textContent = '';
+                            element.classList.remove('error');
+                        });
+                    }
+                }
+            }
+            
+            // Update copyright year
+            const currentYearElement = document.getElementById('currentYear');
+            if (currentYearElement) {
+                currentYearElement.textContent = new Date().getFullYear();
+            }
+            
+            // Smooth scrolling for internal links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        e.preventDefault();
+                        
+                        // Close mobile menu if open
+                        if (navLinks && navLinks.classList.contains('active')) {
+                            navLinks.classList.remove('active');
+                            if (mobileMenuBtn) {
+                                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                            }
+                        }
+                        
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80, // Offset for fixed header
+                            behavior: 'smooth'
+                        });
+                        
+                        // Update URL without jumping
+                        history.pushState(null, null, targetId);
+                    }
+                });
+            });
+            
+            console.log('All functionality initialized');
+        }
+        
+        // Load all components when the DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load components in sequence to ensure proper dependencies
+            includeHTML('header-container', 'includes/header.html')
+                .then(() => includeHTML('hero-container', 'includes/hero.html'))
+                .then(() => includeHTML('about-container', 'includes/about.html'))
+                .then(() => includeHTML('services-container', 'includes/services.html'))
+                .then(() => includeHTML('projects-container', 'includes/projects.html'))
+                .then(() => includeHTML('articles-container', 'components/articles.html'))
+                .then(() => includeHTML('contact-container', 'includes/contact.html'))
+                .then(() => includeHTML('footer-container', 'includes/footer.html'))
+                .then(() => includeHTML('ui-elements-container', 'includes/ui-elements.html'))
+                .then(() => {
+                    // Only initialize after all components are loaded
+                    initializeAll();
+                    
+                    // Initialize interactive background
+                    initializeInteractiveBackground();
+                    
+                    // Initialize modals
+                    initializeModals();
+                });
+        });
+        
+        // Initialize interactive background effects
+        function initializeInteractiveBackground() {
+            const cursorDot = document.querySelector('.cursor-dot');
+            
+            // Track mouse movement
+            document.addEventListener('mousemove', function(e) {
+                // Update cursor dot position
+                cursorDot.style.left = e.clientX + 'px';
+                cursorDot.style.top = e.clientY + 'px';
+                
+                // Make sure the dot is visible
+                if (!cursorDot.classList.contains('active')) {
+                    cursorDot.classList.add('active');
+                }
+            });
+            
+            // Hide cursor dot when mouse leaves window
+            document.addEventListener('mouseleave', function() {
+                cursorDot.classList.remove('active');
+            });
+            
+            // Create floating particles
+            const interactiveBg = document.querySelector('.interactive-bg');
+            for (let i = 0; i < 15; i++) {
+                createParticle(interactiveBg);
+            }
+        }
+        
+        // Create a single floating particle
+        function createParticle(container) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            // Random styling
+            const size = Math.random() * 8 + 3;
+            const opacity = Math.random() * 0.15 + 0.05;
+            
+            particle.style.position = 'absolute';
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.borderRadius = '50%';
+            particle.style.backgroundColor = '#60a5fa';
+            particle.style.opacity = opacity;
+            particle.style.pointerEvents = 'none';
+            
+            // Random position
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.top = Math.random() * 100 + 'vh';
+            
+            // Add to container
+            container.appendChild(particle);
+            
+            // Animate the particle
+            animateParticle(particle);
+        }
+        
+        // Animate a single particle
+        function animateParticle(particle) {
+            // Random movement values
+            const duration = Math.random() * 30000 + 20000; // 20-50 seconds
+            const xMovement = Math.random() * 20 - 10; // -10 to 10vw
+            const yMovement = Math.random() * 20 - 10; // -10 to 10vh
+            
+            // Current position
+            const startX = parseFloat(particle.style.left);
+            const startY = parseFloat(particle.style.top);
+            
+            // Target position
+            const targetX = startX + xMovement;
+            const targetY = startY + yMovement;
+            
+            // Animation start time
+            const startTime = Date.now();
+            
+            // Animation function
+            function move() {
+                // Calculate progress (0 to 1)
+                const progress = (Date.now() - startTime) / duration;
+                
+                if (progress < 1) {
+                    // Interpolate position
+                    const currentX = startX + (targetX - startX) * progress;
+                    const currentY = startY + (targetY - startY) * progress;
+                    
+                    // Update position
+                    particle.style.left = currentX + 'vw';
+                    particle.style.top = currentY + 'vh';
+                    
+                    // Continue animation
+                    requestAnimationFrame(move);
+                } else {
+                    // Start new animation
+                    animateParticle(particle);
+                }
+            }
+            
+            // Start animation
+            requestAnimationFrame(move);
+        }
+        
+        // Initialize modal functionality
+        function initializeModals() {
+            // Get all modal trigger buttons
+            const modalBtns = document.querySelectorAll('.value-modal-btn');
+            const modals = document.querySelectorAll('.modal');
+            const closeBtns = document.querySelectorAll('.modal-close');
+            
+            // Add debug style to make modals obvious
+            document.head.insertAdjacentHTML('beforeend', `
+                <style>
+                    .modal.active {
+                        display: flex !important;
+                        background-color: rgba(0, 0, 0, 0.7) !important;
+                    }
+                    .modal-content {
+                        background-color: white !important;
+                        opacity: 1 !important;
+                        border: 3px solid #0066cc !important;
+                        box-shadow: 0 0 20px 5px rgba(0, 102, 204, 0.5) !important;
+                    }
+                    .dark-theme .modal-content {
+                        background-color: #1e3a8a !important;
+                    }
+                    .modal-header, .modal-body, .modal-cta {
+                        background-color: transparent !important;
+                    }
+                    .modal-header h2, .modal-body p, .modal-body li {
+                        color: #000 !important;
+                    }
+                    .dark-theme .modal-header h2, 
+                    .dark-theme .modal-body p, 
+                    .dark-theme .modal-body li {
+                        color: #fff !important;
+                    }
+                </style>
+            `);
+            
+            // Add click event to each modal button
+            modalBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal');
+                    const modal = document.getElementById(modalId);
+                    
+                    if (modal) {
+                        // Make sure any previous closing animations are reset
+                        modal.classList.remove('closing');
+                        
+                        // Make modal visible but not yet active
+                        modal.style.visibility = 'visible';
+                        modal.style.display = 'flex';
+                        
+                        // Force reflow to ensure transitions work
+                        void modal.offsetWidth;
+                        
+                        // Add active class to trigger animations
+                        modal.classList.add('active');
+                        
+                        // Prevent body scrolling
+                        document.body.style.overflow = 'hidden';
+                        
+                        console.log('Modal opened:', modalId); // Debugging
+                    }
+                });
+            });
+            
+            // Function to close modal with animation
+            function closeModal(modal) {
+                if (modal) {
+                    // Add closing class to trigger closing animation
+                    modal.classList.add('closing');
+                    
+                    // Remove active class
+                    modal.classList.remove('active');
+                    
+                    // Wait for animation to complete before hiding completely
+                    setTimeout(() => {
+                        modal.style.visibility = 'hidden';
+                        modal.style.display = 'none';
+                        modal.classList.remove('closing');
+                        
+                        // Allow body scrolling again
+                        document.body.style.overflow = '';
+                        
+                        console.log('Modal fully closed'); // Debugging
+                    }, 400); // Match transition duration in CSS
+                    
+                    console.log('Modal closing started'); // Debugging
+                }
+            }
+            
+            // Add click event to close buttons
+            closeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal);
+                });
+            });
+            
+            // Close modal when clicking outside the content
+            modals.forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    // Check if click was on modal background (not on content)
+                    if (e.target === this) {
+                        closeModal(this);
+                    }
+                });
+                
+                // Prevent clicks on modal content from closing the modal
+                modal.querySelector('.modal-content').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+            
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const activeModal = document.querySelector('.modal.active');
+                    if (activeModal) {
+                        closeModal(activeModal);
+                    }
+                }
+            });
+            
+            // Add animation end event listener to handle cleanup
+            modals.forEach(modal => {
+                modal.addEventListener('animationend', function(e) {
+                    if (!modal.classList.contains('active')) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+        }
+    </script>
+</head>
+<body class="hexagon-background">
+    <!-- Skip to Content Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Interactive Background Elements -->
+    <div class="interactive-bg"></div>
+    <div class="cursor-dot"></div>
+    
+    <!-- Overlay Logo -->
+    <div class="overlay-logo">
+        <img src="images/logo.png" alt="M-Infinity Logo Overlay">
+    </div>
+    
+    <!-- Header -->
+    <div id="header-container"></div>
+    
+    <!-- Main Content -->
+    <main id="main-content">
+        <div id="hero-container"></div>
+        <div id="about-container"></div>
+        <div id="services-container"></div>
+        <div id="projects-container"></div>
+        <div id="articles-container"></div>
+        <div id="contact-container"></div>
+    </main>
+    
+    <!-- Footer -->
+    <div id="footer-container"></div>
+    
+    <!-- UI Elements (Scroll to Top, Cookie Consent) -->
+    <div id="ui-elements-container"></div>
+</body>
+</html>

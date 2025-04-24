@@ -1,0 +1,31 @@
+/**
+ * M-Infinity - Main Stylesheet
+ * A modular, maintainable, and optimized CSS structure
+ * 
+ * Author: M-Infinity
+ * Version: 2.0
+ */
+
+/* Base Styles */
+@import 'modules/reset.css';
+@import 'modules/variables.css';
+@import 'modules/typography.css';
+@import 'modules/layout.css';
+@import 'modules/buttons.css';
+@import 'modules/utilities.css';
+
+/* Component Styles */
+@import 'modules/header.css';
+@import 'modules/hero.css';
+@import 'modules/sections.css';
+@import 'modules/cards.css';
+@import 'modules/articles.css';
+@import 'modules/forms.css';
+@import 'modules/footer.css';
+@import 'modules/modals.css';
+
+/* Special Components */
+@import 'modules/background-pattern.css';
+@import 'modules/animations.css';
+@import 'modules/responsive.css';
+@import 'modules/custom-fixes.css'; /* Added custom fixes */

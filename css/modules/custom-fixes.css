@@ -1,0 +1,96 @@
+/**
+ * Custom fixes for specific issues
+ */
+
+/* Force all project grid layouts to use the same consistent column sizing */
+.projects-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  gap: var(--grid-gap) !important;
+}
+
+/* Ensure all cards share the same width calculation */
+.projects-grid .project-card {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  flex: 1 1 0 !important;
+}
+
+/* Force grid item alignment */
+.projects-grid > * {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* Ensure content inside cards doesn't break layout */
+.project-content {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-wrap: break-word !important;
+  flex: 1 1 auto !important;
+}
+
+/* Make all project images have identical dimensions */
+.project-image {
+  width: 100% !important; 
+  height: 240px !important;
+}
+
+.project-image img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Reset any margins that might be causing issues */
+.projects-grid .project-card {
+  margin: 0 !important;
+}
+
+/* Fix for Firefox which might handle grid items differently */
+@-moz-document url-prefix() {
+  .projects-grid .project-card {
+    width: 100% !important;
+  }
+}
+
+/* Fix for Safari grid layout */
+_::-webkit-full-page-media, _:future, :root .projects-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+}
+
+/* Add support for older browsers */
+.projects-grid {
+  display: -ms-grid !important;
+  -ms-grid-columns: 1fr 1fr 1fr !important;
+}
+
+/* Fix for Legacy Edge */
+@supports (-ms-ime-align: auto) {
+  .projects-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .projects-grid .project-card {
+    flex: 0 0 calc(33.333% - var(--grid-gap)) !important;
+  }
+}
+
+/* Fix for IE11 */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .projects-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .projects-grid .project-card {
+    flex: 0 0 calc(33.333% - 20px) !important;
+    margin: 10px !important;
+  }
+}

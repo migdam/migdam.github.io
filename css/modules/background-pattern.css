@@ -1,0 +1,15 @@
+/**
+ * Solid Background for AI Consultancy
+ */
+
+/* Base background with very light blue */
+.hexagon-background {
+  position: relative;
+  background: #f0f8ff; /* Very light blue (AliceBlue) */
+  min-height: 100vh;
+}
+
+/* Interactive elements are also removed to provide a clean, minimal look */
+.interactive-bg, .cursor-dot, .particle {
+  display: none;
+}
